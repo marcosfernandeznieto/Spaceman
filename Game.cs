@@ -2,24 +2,31 @@ using System;
 
 namespace Spaceman
 {
-    class Game
+    public class Game
     {
         public String Codeword {get; set; }
         public String CurrentWord {get; set; }
         public int MaxGuesses { get; set; }
         public int CurrentGuesses { get; set; }
         public string[] CodewordOptions = {"pocket", "willpower", "assignment", "tycoon", "cheap", "family"};
-        public Ufo ovni = new Ufo();
+        public Ufo ovni;
 
         public Game() {
             Random random = new Random();
             int position = random.Next(0,5); 
-            this.Codeword = CodewordOptions[position];
-            this.MaxGuesses = 5;
-            this.CurrentGuesses = 0;
-            for (int i=0; i<this.Codeword.Length; i++) {
-                this.CurrentWord+="_";
+            Codeword = CodewordOptions[position];
+            MaxGuesses = 5;
+            CurrentGuesses = 0;
+            CurrentWord=CreateCurrentword(Codeword.Length);
+            ovni = new Ufo();
+        }
+
+        public string CreateCurrentword(int length) {
+            string output="";
+            for (int i=0; i<length; i++) {
+                output+="_";
             }
+            return output;
         }
 
         public void Greet() {
@@ -28,17 +35,17 @@ namespace Spaceman
         }
 
         public bool DidWin() {
-            bool output = this.Codeword.Equals(this.CurrentWord) ? true : false;
+            bool output = Codeword.Equals(this.CurrentWord) ? true : false;
             return output;
         }
         public bool DidLose() {
-            bool output = this.CurrentGuesses>=this.MaxGuesses ? true : false;
+            bool output = CurrentGuesses>=this.MaxGuesses ? true : false;
             return output;
         }
         public void Display() {
             Console.WriteLine(ovni.Stringify());
-            Console.WriteLine("Your actual progress: "+this.CurrentWord);
-            Console.WriteLine("Remaining attempts: "+ (this.MaxGuesses-this.CurrentGuesses) );
+            Console.WriteLine("Your actual progress: "+CurrentWord);
+            Console.WriteLine("Remaining attempts: "+ (MaxGuesses-CurrentGuesses) );
         }
         public void Ask() {
             string letter;
@@ -47,14 +54,14 @@ namespace Spaceman
             if (letter.Length!=1) {
                 return;
             }
-            if (this.Codeword.Contains(letter)) {
-                for (int j=0; j<this.Codeword.Length; j++) {
-                    if (this.Codeword[j]==letter[0]) {
-                        this.CurrentWord = this.CurrentWord.Remove(j,1).Insert(j, letter);
+            if (Codeword.Contains(letter)) {
+                for (int j=0; j<Codeword.Length; j++) {
+                    if (Codeword[j]==letter[0]) {
+                        CurrentWord = CurrentWord.Remove(j,1).Insert(j, letter);
                     }
                 }
             } else {
-                this.CurrentGuesses++;
+                CurrentGuesses++;
                 ovni.AddPart();
             }
         }
